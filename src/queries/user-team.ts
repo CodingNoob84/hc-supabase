@@ -1,4 +1,5 @@
 import { TypedSupabaseClient } from '@/supabase/types'
+import { redirect } from 'next/navigation'
 
 export const getUser = async ({
     supabase,
@@ -12,12 +13,14 @@ export const getUser = async ({
             error: userError,
         } = await supabase.auth.getUser()
 
+        console.log('user', user)
+
         if (userError) {
-            throw new Error(`Auth error: ${userError.message}`)
+            redirect('/login')
         }
 
         if (!user) {
-            throw new Error('No authenticated user found')
+            redirect('/login')
         }
 
         // Step 2: Query the "users" table to fetch user details

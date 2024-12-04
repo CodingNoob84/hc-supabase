@@ -7,7 +7,6 @@ import {
     HydrationBoundary,
     QueryClient,
 } from '@tanstack/react-query'
-import { redirect } from 'next/navigation'
 
 export default async function DashboardLayout({
     children,
@@ -21,9 +20,11 @@ export default async function DashboardLayout({
         queryFn: () => userQuery.func({ supabase }),
     })
 
-    if (!user) {
-        redirect('/login')
-    }
+    console.log('user', user)
+
+    // if (!user) {
+    //     redirect('/login')
+    // }
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
             <div className="w-screen min-h-screen md:max-w-3xl mx-auto">

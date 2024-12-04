@@ -21,9 +21,13 @@ export default async function Header() {
                     </div>
                     <div className="flex items-center space-x-4">
                         {user ? (
-                            <Button>Go to Dashboard</Button>
+                            <Button asChild>
+                                <Link href="/dashboard">Go to Dashboard</Link>
+                            </Button>
                         ) : (
-                            <Button>Login</Button>
+                            <Button asChild>
+                                <Link href="/login">Login</Link>
+                            </Button>
                         )}
                     </div>
                 </div>
