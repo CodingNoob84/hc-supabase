@@ -24,7 +24,7 @@ interface User {
     id: string
 }
 
-export default function StartPlay() {
+export const StartPlay = () => {
     const router = useRouter()
     const supabase = getSupabaseBrowserClient()
 

@@ -18,7 +18,7 @@ export default async function LoginPage() {
     }
 
     return (
-        <div className="w-screen h-screen flex justify-center items-center bg-gradient-to-br from-green-100 to-blue-100">
+        <div className="w-screen h-screen flex justify-center items-center ">
             <form className="w-full max-w-md" action={logIn}>
                 <Card className="w-full shadow-lg">
                     <CardHeader className="space-y-1 flex flex-col items-center">

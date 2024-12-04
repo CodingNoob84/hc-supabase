@@ -34,7 +34,7 @@ export default function ReviewCard({
     }
 
     return (
-        <Card className="w-full max-w-md">
+        <Card className="w-full">
             <CardHeader>
                 <CardTitle>Leave a Review</CardTitle>
                 <CardDescription>We appreciate your feedback!</CardDescription>
