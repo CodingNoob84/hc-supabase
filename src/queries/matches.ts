@@ -143,7 +143,7 @@ export const switchInnings = async (
     supabase: TypedSupabaseClient
 ): Promise<switchInningsReturnTypes | null> => {
     const result = await supabase.rpc('switchinnings', {
-        match_id: matchId,
+        p_matchid: matchId,
     })
     console.log('result', result)
     return result.data as switchInningsReturnTypes | null
@@ -151,21 +151,32 @@ export const switchInnings = async (
 
 export interface handleScoreTypes {
     matchId: string
+    userId: string
     ball: number
-    battingNumber: number | undefined
-    bowlingNumber: number | undefined
+    Number: number
+}
+
+export interface handleScoreReturnTypes {
+    ball: number
+    result: string | null
+    message: string
+    success: true
+    match_id: string
+    my_number: number | null
+    batting_id: string
+    opp_number: number | null
 }
 
 export const handleScore = async (
     data: handleScoreTypes,
     supabase: TypedSupabaseClient
-) => {
+): Promise<handleScoreReturnTypes | null> => {
     const result = await supabase.rpc('handlescore', {
-        p_match_id: data.matchId,
+        p_matchid: data.matchId,
+        p_userid: data.userId,
         p_ball: data.ball,
-        p_batting_number: data.battingNumber,
-        p_bowling_number: data.bowlingNumber,
+        p_number: data.Number,
     })
 
-    return result.data
+    return result.data as handleScoreReturnTypes | null
 }

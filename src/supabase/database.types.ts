@@ -130,6 +130,41 @@ export type Database = {
           },
         ]
       }
+      reviews: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          rating: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          rating?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          rating?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       runperball: {
         Row: {
           ball: number
@@ -261,10 +296,10 @@ export type Database = {
       }
       handlescore: {
         Args: {
-          p_match_id: string
+          p_matchid: string
+          p_userid: string
           p_ball: number
-          p_batting_number?: number
-          p_bowling_number?: number
+          p_number: number
         }
         Returns: Json
       }
@@ -281,18 +316,17 @@ export type Database = {
       }
       switchinnings: {
         Args: {
-          match_id: string
+          p_matchid: string
         }
         Returns: Json
       }
       updatescore: {
         Args: {
           p_matchid: string
-          p_ball: number
-          p_runs?: number
-          p_wickets?: number
+          p_runs: number
+          p_wickets: number
         }
-        Returns: Json
+        Returns: undefined
       }
     }
     Enums: {

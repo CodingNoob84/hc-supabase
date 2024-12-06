@@ -15,14 +15,11 @@ import {
     matchInitTypes,
 } from '@/queries/matches'
 import { botQuery, userQuery } from '@/queries/queries'
+import { BotInfo, UserInfo } from '@/queries/user-team'
 import { getSupabaseBrowserClient } from '@/supabase/client'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { Skeleton } from '../ui/skeleton'
-
-interface User {
-    id: string
-}
 
 export const StartPlay = () => {
     const router = useRouter()
@@ -30,13 +27,9 @@ export const StartPlay = () => {
 
     const queryClient = useQueryClient()
 
-    const user: User | undefined = queryClient.getQueryData(userQuery.key)
+    const user: UserInfo | undefined = queryClient.getQueryData(userQuery.key)
 
-    // const { data: user } = useQuery({
-    //     queryKey: userQuery.key,
-    //     queryFn: () => userQuery.func({ supabase }),
-    // })
-    const { data: bot, isLoading } = useQuery({
+    const { data: bot, isLoading } = useQuery<BotInfo>({
         queryKey: botQuery.key,
         queryFn: () => botQuery.func({ supabase }),
     })

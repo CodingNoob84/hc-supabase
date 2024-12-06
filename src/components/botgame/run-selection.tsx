@@ -1,13 +1,16 @@
 'use client'
 import {
     handleScore,
+    handleScoreReturnTypes,
     handleScoreTypes,
     MatchData,
-    TeamInfo,
 } from '@/queries/matches'
+import { botQuery } from '@/queries/queries'
+import { BotInfo, UserInfo } from '@/queries/user-team'
 import { getSupabaseBrowserClient } from '@/supabase/client'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import { Loader } from '../common/loader'
 import { CommentaryCard } from './commentary'
 import { DisplayCard } from './display-card'
 import InningsEndedCard from './innings-ended'
@@ -30,89 +33,100 @@ interface RunSelectionTypes {
     totalballs: number
 }
 
-export const RunSelectionBlock = ({
-    type,
-    matchId,
-    myuserId,
-    battingId,
-    totalballs,
-}: RunSelectionTypes) => {
+export const RunSelectionBlock = ({ matchId }: RunSelectionTypes) => {
     const queryClient = useQueryClient()
     const supabase = getSupabaseBrowserClient()
-    const data: MatchData | undefined = queryClient.getQueryData([
-        'match',
-        matchId,
-    ])
 
-    const user: TeamInfo | undefined = queryClient.getQueryData(['user'])
-    console.log('data', data, user)
+    // Explicitly typing user and bot to ensure correct types
+    const user = queryClient.getQueryData<UserInfo>(['user'])
+    const { data: bot } = useQuery<BotInfo>({
+        queryKey: botQuery.key,
+        queryFn: () => botQuery.func({ supabase }),
+    })
+    const matchData = queryClient.getQueryData<MatchData>(['match', matchId])
+
     const [loading, setLoading] = useState(false)
     const [userNumber, setUserNumber] = useState(5)
     const [botNumber, setBotNumber] = useState(5)
-    const [battingNumber, setBattingNumber] = useState('')
+    const [commentaryResult, setCommentaryResult] = useState('')
 
     const handleScoreMutation = useMutation({
         mutationFn: (data: handleScoreTypes) => handleScore(data, supabase),
-        onSuccess: (data) => {
-            //querClient.invalidateQueries({ queryKey: ['match', matchId] })
+        onSuccess: (data: handleScoreReturnTypes | null) => {
+            //queryClient.invalidateQueries({ queryKey: ['match', matchId] })
             console.log('Score updated successfully:', data)
+            if (data) {
+                if (data.result) {
+                    setBotNumber(data.opp_number ?? 5)
+                    setUserNumber(data.my_number ?? 5)
+
+                    setTimeout(() => {
+                        setLoading(false)
+                        setCommentaryResult(data.result ?? '')
+                        queryClient.invalidateQueries({
+                            queryKey: ['match', matchId],
+                        })
+                    }, LoadingDelay * 1000)
+                }
+            }
         },
         onError: (error) => {
             console.error('Error updating score:', error)
         },
     })
 
+    // If neither user nor bot is found, return loading state
+    if (!user && !bot && !matchData) return <Loader />
+
+    console.log('data', user?.id, bot?.id)
+
     const handleSelection = (numb: number) => {
         setLoading(true)
-        setBattingNumber('')
-        if (type == 'bot') {
-            const usernumb = numb
+
+        if (matchData?.type == 'bot') {
             const botnumb = generateRandomBotNumber()
+            if (bot?.id) {
+                // Check if bot.id exists
+                handleScoreMutation.mutate({
+                    matchId: matchId,
+                    ball: parseInt(matchData?.current_ball ?? '0') + 1,
+                    userId: bot.id, // Use bot.id here after checking
+                    Number: botnumb,
+                })
+            }
+        }
+
+        if (user?.id) {
+            // Check if user.id exists
             handleScoreMutation.mutate({
                 matchId: matchId,
-                ball: parseInt(data?.current_ball ?? '0') + 1,
-                battingNumber: battingId == myuserId ? usernumb : botnumb,
-                bowlingNumber: battingId != myuserId ? usernumb : botnumb,
+                ball: parseInt(matchData?.current_ball ?? '0') + 1,
+                userId: user.id, // Use user.id here after checking
+                Number: numb,
             })
-
-            setTimeout(() => {
-                if (usernumb == botnumb) {
-                    setBattingNumber('W')
-                } else {
-                    const number = battingId == myuserId ? usernumb : botnumb
-                    setBattingNumber(`${number}`)
-                }
-                setUserNumber(usernumb)
-                setBotNumber(botnumb)
-                setLoading(false)
-                queryClient.invalidateQueries({ queryKey: ['match', matchId] })
-            }, LoadingDelay * 1000)
         }
     }
+
     return (
         <>
             <CommentaryCard
+                innings={matchData?.innings}
                 loading={loading}
-                totalballs={totalballs}
-                isWicket={userNumber == botNumber}
-                battingNumber={battingNumber}
+                totalballs={matchData?.current_ball ?? ''}
+                result={commentaryResult}
             />
-            {data?.innings === 2 && data?.is_completed ? (
-                // Render the ResultCard when the game is completed in the second innings
+            {matchData?.innings === 2 && matchData?.is_completed ? (
                 <ResultCard />
-            ) : data?.innings === 1 && data?.is_innings_over ? (
-                // Render the InningsEndedCard when the first innings is over
+            ) : matchData?.innings === 1 && matchData?.is_innings_over ? (
                 <InningsEndedCard />
             ) : (
                 <>
-                    {/* DisplayCard for ongoing game */}
                     <DisplayCard
                         loading={loading}
                         myNumber={userNumber}
                         oppNumber={botNumber}
-                        battingNumber={battingNumber}
+                        battingNumber={commentaryResult}
                     />
-                    {/* RunsBlock for user interaction */}
                     <RunsBlock
                         handleSelection={handleSelection}
                         disable={handleScoreMutation.isPending || loading}

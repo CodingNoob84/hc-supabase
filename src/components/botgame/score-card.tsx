@@ -17,6 +17,10 @@ export const convertBallsToOvers = (balls: number) => {
     return `${overs}.${remainingBalls}`
 }
 
+export const BottomContent = () => {
+    return <div className="flex flex-row justify-between text-xs">content</div>
+}
+
 const TeamCard = ({ team, isReverse }: TeamCardProps) => (
     <div
         className={`flex flex-col items-start space-y-2 ${
@@ -62,13 +66,13 @@ export const ScoreCard = ({ data }: { data: MatchData }) => {
             <CardContent className="p-4 flex flex-col gap-2">
                 <div className="flex flex-row justify-between text-xs">
                     <Badge variant="outline" className="text-xs">
-                        Max Overs: 5
+                        MaxOvers: {data.max_overs}
                     </Badge>
                     <Badge variant="outline" className="text-xs">
-                        1st innings
+                        {data.innings == 1 ? '1st' : '2nd'} innings
                     </Badge>
                     <Badge variant="outline" className="text-xs">
-                        Max Wickets: 5
+                        MaxWickets: {data.max_wickets}
                     </Badge>
                 </div>
                 <div className="flex flex-row justify-between items-center">
@@ -87,6 +91,7 @@ export const ScoreCard = ({ data }: { data: MatchData }) => {
                     </div>
                     <TeamCard team={data.my_team} isReverse />
                 </div>
+                <BottomContent />
             </CardContent>
         </Card>
     )

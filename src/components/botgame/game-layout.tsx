@@ -1,7 +1,8 @@
 'use client'
 import { getMatchData, MatchData } from '@/queries/matches'
+import { UserInfo } from '@/queries/user-team'
 import { getSupabaseBrowserClient } from '@/supabase/client'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Loader } from '../common/loader'
 import { TossCard } from './coin-toss'
 import { RunSelectionBlock } from './run-selection'
@@ -35,15 +36,15 @@ export interface ScoreCardType {
 
 export const GameLayout = ({ matchId }: { matchId: string }) => {
     const supabase = getSupabaseBrowserClient()
+    const queryClient = useQueryClient()
 
-    // Fetch match data with react-query
+    const user: UserInfo | undefined = queryClient.getQueryData(['user'])
     const { data, isLoading } = useQuery<MatchData | null>({
         queryKey: ['match', matchId],
         queryFn: async () => await getMatchData(matchId, supabase),
     })
 
-    // Conditional rendering while waiting for data
-    if (isLoading) {
+    if (isLoading && !user) {
         return <Loader />
     }
 

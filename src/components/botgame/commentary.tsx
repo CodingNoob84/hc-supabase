@@ -4,38 +4,42 @@ import { Card, CardContent } from '../ui/card'
 import { convertBallsToOvers } from './score-card'
 
 export interface CommentaryCardTypes {
+    innings: number | undefined
     loading: boolean
-    totalballs: number
-    isWicket: boolean
-    battingNumber: string
+    totalballs: string
+    result: string
 }
 
 const CommentaryCardComponent = ({
     totalballs,
-    battingNumber,
+    result,
 }: CommentaryCardTypes) => {
     return (
         <Card className="w-full max-w-md mx-auto">
             <CardContent className="p-2">
-                <div className="flex items-center">
-                    <span className="text-sm font-semibold mx-5">
-                        Over {convertBallsToOvers(totalballs)}:
-                    </span>
-                    <div className="text-sm text-muted-foreground">
-                        {battingNumber === '' ? (
-                            ''
-                        ) : (
-                            <>
-                                <Badge className="inline-flex items-center justify-center w-12 text-center align-middle">
-                                    {battingNumber}
-                                </Badge>
-                                <span className="ml-2">
-                                    {getCommentary(battingNumber)}
-                                </span>
-                            </>
-                        )}
+                {result == '' ? (
+                    <div className="text-sm text-muted-foreground">{`"With the clear sky above and perfect weather conditions, it's an ideal day for some exciting cricket action on the field!"`}</div>
+                ) : (
+                    <div className="flex items-center">
+                        <span className="text-sm font-semibold mx-5">
+                            Over {convertBallsToOvers(parseInt(totalballs))}:
+                        </span>
+                        <div className="text-sm text-muted-foreground">
+                            {result === '' ? (
+                                ''
+                            ) : (
+                                <>
+                                    <Badge className="inline-flex items-center justify-center w-12 text-center align-middle">
+                                        {result}
+                                    </Badge>
+                                    <span className="ml-2">
+                                        {getCommentary(result)}
+                                    </span>
+                                </>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
             </CardContent>
         </Card>
     )
@@ -96,6 +100,7 @@ export const CommentaryJson: CommentaryJsonType = {
 
 // getCommentary function to retrieve random commentary
 export const getCommentary = (runType: string): string => {
+    console.log('run', runType)
     const commentaryOptions = CommentaryJson[runType]
 
     if (!commentaryOptions) {
