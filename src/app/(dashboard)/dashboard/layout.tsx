@@ -1,4 +1,5 @@
 import Header from '@/components/dashboard/header'
+import { UserPresence } from '@/components/dashboard/user-presence'
 import { userQuery } from '@/queries/queries'
 
 import { getSupabaseServer } from '@/supabase/server'
@@ -29,6 +30,7 @@ export default async function DashboardLayout({
         <HydrationBoundary state={dehydrate(queryClient)}>
             <div className="w-screen min-h-screen md:max-w-3xl mx-auto">
                 <Header />
+                <UserPresence />
                 {children}
             </div>
         </HydrationBoundary>

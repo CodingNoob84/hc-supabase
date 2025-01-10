@@ -244,6 +244,149 @@ export type Database = {
           },
         ]
       }
+      usereachball: {
+        Row: {
+          ball: number
+          battingnumber: number | null
+          bowlingnumber: number | null
+          created_at: string
+          id: string
+          inningsended: boolean | null
+          matchid: string
+          result: string | null
+          toss: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          ball: number
+          battingnumber?: number | null
+          bowlingnumber?: number | null
+          created_at?: string
+          id?: string
+          inningsended?: boolean | null
+          matchid: string
+          result?: string | null
+          toss?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          ball?: number
+          battingnumber?: number | null
+          bowlingnumber?: number | null
+          created_at?: string
+          id?: string
+          inningsended?: boolean | null
+          matchid?: string
+          result?: string | null
+          toss?: boolean | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      userpresence: {
+        Row: {
+          isplaying: boolean | null
+          last_seen: string
+          status: string
+          userid: string
+        }
+        Insert: {
+          isplaying?: boolean | null
+          last_seen?: string
+          status?: string
+          userid: string
+        }
+        Update: {
+          isplaying?: boolean | null
+          last_seen?: string
+          status?: string
+          userid?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "userpresence_userid_fkey"
+            columns: ["userid"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      userrequest: {
+        Row: {
+          created_at: string
+          gamemode: string | null
+          id: string
+          matchid: string | null
+          receiverid: string | null
+          senderid: string | null
+          status_req: string
+          updated_at: string
+          userone: string | null
+          usertwo: string | null
+        }
+        Insert: {
+          created_at?: string
+          gamemode?: string | null
+          id?: string
+          matchid?: string | null
+          receiverid?: string | null
+          senderid?: string | null
+          status_req?: string
+          updated_at?: string
+          userone?: string | null
+          usertwo?: string | null
+        }
+        Update: {
+          created_at?: string
+          gamemode?: string | null
+          id?: string
+          matchid?: string | null
+          receiverid?: string | null
+          senderid?: string | null
+          status_req?: string
+          updated_at?: string
+          userone?: string | null
+          usertwo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "userrequest_matchid_fkey"
+            columns: ["matchid"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "userrequest_receiverid_fkey"
+            columns: ["receiverid"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "userrequest_senderid_fkey"
+            columns: ["senderid"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "userrequest_userone_fkey"
+            columns: ["userone"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "userrequest_usertwo_fkey"
+            columns: ["usertwo"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           avatar_url: string | null
@@ -251,7 +394,9 @@ export type Database = {
           display_name: string | null
           email: string | null
           id: string
+          last_seen: string | null
           role: string | null
+          status: string | null
           teamdescription: string | null
           teamname: string | null
         }
@@ -261,7 +406,9 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id?: string
+          last_seen?: string | null
           role?: string | null
+          status?: string | null
           teamdescription?: string | null
           teamname?: string | null
         }
@@ -271,7 +418,9 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id?: string
+          last_seen?: string | null
           role?: string | null
+          status?: string | null
           teamdescription?: string | null
           teamname?: string | null
         }
@@ -288,6 +437,22 @@ export type Database = {
         }
         Returns: Json
       }
+      get_users_with_requests: {
+        Args: {
+          my_user_id: string
+        }
+        Returns: {
+          user_id: string
+          display_name: string
+          avatar_url: string
+          email: string
+          teamname: string
+          presence_status: string
+          last_seen: string
+          req_id: string
+          req_status: string
+        }[]
+      }
       getmatchdata: {
         Args: {
           match_id: string
@@ -302,6 +467,18 @@ export type Database = {
           p_number: number
         }
         Returns: Json
+      }
+      init_usermatch: {
+        Args: {
+          userone: string
+          usertwo: string
+          gamemode: string
+          is_timer: boolean
+        }
+        Returns: {
+          match_id: string
+          inserted_at: string
+        }[]
       }
       matchinit: {
         Args: {
@@ -320,6 +497,13 @@ export type Database = {
         }
         Returns: Json
       }
+      update_user_status: {
+        Args: {
+          _userid: string
+          _status: string
+        }
+        Returns: undefined
+      }
       updatescore: {
         Args: {
           p_matchid: string
@@ -327,6 +511,21 @@ export type Database = {
           p_wickets: number
         }
         Returns: undefined
+      }
+      upsertreqstatus: {
+        Args: {
+          myid: string
+          friendid: string
+          reqstatus: string
+          reqgamemode: string
+        }
+        Returns: {
+          operation: string
+          id: string
+          status_req: string
+          gamemode: string
+          matchid: string
+        }[]
       }
     }
     Enums: {

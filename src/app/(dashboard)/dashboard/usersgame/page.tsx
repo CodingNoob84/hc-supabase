@@ -1,5 +1,5 @@
-import { UnderDevelopment } from '@/components/common/under-development'
 import { Button } from '@/components/ui/button'
+import { Users } from '@/components/usersgame/users'
 import Link from 'next/link'
 
 export default function UsersGamePage() {
@@ -10,7 +10,11 @@ export default function UsersGamePage() {
                     <Link href="/dashboard">Back</Link>
                 </Button>
             </div>
-            <UnderDevelopment />
+            {/* <UnderDevelopment /> */}
+            <div className="px-2">
+                <Users />
+                {/* <FriendsList /> */}
+            </div>
         </div>
     )
 }

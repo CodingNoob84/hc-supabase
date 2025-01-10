@@ -173,3 +173,110 @@ export const updateReview = async ({
         }
     }
 }
+
+// export const getAllUsers = async ({
+//     supabase,
+// }: {
+//     supabase: TypedSupabaseClient
+// }) => {
+//     const {
+//         data: { user },
+//         error: userError,
+//     } = await supabase.auth.getUser()
+
+//     if (userError) {
+//         throw new Error(`Error fetching user: ${userError.message}`)
+//     }
+
+//     if (user) {
+//         const { data, error } = await supabase
+//             .from('users')
+//             .select('*')
+//             .neq('id', user.id) // Exclude the current authenticated user
+
+//         if (error) {
+//             throw new Error(`Error fetching users: ${error.message}`)
+//         }
+
+//         return data
+//     }
+// }
+
+export type GameMode = 'six_balls' | 'thirty_balls'
+export type RequsetStatusType =
+    | 'requested'
+    | 'none'
+    | 'sent'
+    | 'received'
+    | 'accepted'
+    | 'continue'
+    | 'play'
+
+export interface UserWithRequest {
+    user_id: string
+    display_name: string
+    avatar_url: string
+    email: string
+    teamname: string
+    presence_status: string | null // `null` if no presence record exists
+    last_seen: string | null // `null` if no presence record exists
+    req_id: string | null
+    req_status: RequsetStatusType
+    gamemode: GameMode
+}
+
+export const getAllUsersWithRequests = async (
+    supabase: TypedSupabaseClient,
+    userId: string // The current user's ID
+): Promise<UserWithRequest[]> => {
+    try {
+        // Call the RPC function
+        const { data, error } = await supabase.rpc('get_users_with_requests', {
+            my_user_id: userId,
+        })
+
+        if (error) {
+            throw new Error(
+                `Error fetching users with requests: ${error.message}`
+            )
+        }
+
+        if (!data) {
+            throw new Error('No data returned from get_users_with_requests')
+        }
+
+        // Return the typed data
+        return data as UserWithRequest[]
+    } catch (err) {
+        console.error('Error fetching users with requests:', err)
+        throw err
+    }
+}
+
+export const upsertReqStatus = async (
+    supabase: TypedSupabaseClient,
+    myid: string,
+    friendid: string,
+    reqstatus: string,
+    gamemode: string
+): Promise<{ result: string }> => {
+    try {
+        console.log('input', myid, friendid, reqstatus)
+        const { data, error } = await supabase.rpc('upsertreqstatus', {
+            myid,
+            friendid,
+            reqstatus,
+            reqgamemode: gamemode,
+        })
+
+        if (error) {
+            console.error('Error calling upsertreqstatus:', error.message)
+            return { result: 'error' } // Return { result: "error" } if the RPC call fails
+        }
+        console.log('data', data)
+        return { result: 'success' } // Return { result: "success" } if the RPC call succeeds
+    } catch (err) {
+        console.error('Unexpected error:', err)
+        return { result: 'error' } // Return { result: "error" } for unexpected errors
+    }
+}
