@@ -81,12 +81,12 @@ export const RunSelectionBlock = ({ matchId }: RunSelectionTypes) => {
 
     const handleSelection = (numb: number) => {
         setLoading(true)
-
+        console.log('matchdata', matchData)
+        console.log('my_number', numb)
         if (matchData?.type == 'bot') {
             const botnumb = generateRandomBotNumber()
             console.log('botnumber-mynumber', botnumb, numb)
             if (user?.id) {
-                // Check if bot.id exists
                 handleScoreMutation.mutate({
                     matchId: matchId,
                     ball: parseInt(matchData?.current_ball ?? '0') + 1,
