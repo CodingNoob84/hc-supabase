@@ -41,7 +41,7 @@ export interface TeamInfo {
 }
 
 export interface MatchData {
-    type: string // Indicates the type of match ('bot' or 'user')
+    type: 'user' | 'bot' // Indicates the type of match ('bot' or 'user')
     result: string | null // The match result (null if no result)
     innings: number // Current innings (1 or 2)
     my_team: TeamInfo // Information about the user's team
@@ -149,11 +149,30 @@ export const switchInnings = async (
     return result.data as switchInningsReturnTypes | null
 }
 
+export const switchUserInnings = async (
+    matchId: string,
+    supabase: TypedSupabaseClient
+): Promise<switchInningsReturnTypes | null> => {
+    const result = await supabase.rpc('switchuserinnings', {
+        p_matchid: matchId,
+    })
+    console.log('result', result)
+    return result.data as switchInningsReturnTypes | null
+}
+
 export interface handleScoreTypes {
     matchId: string
     userId: string
     ball: number
     Number: number
+}
+
+export interface handleBotScoreTypes {
+    matchId: string
+    userId: string
+    ball: number
+    myNumber: number
+    botNumber: number
 }
 
 export interface handleScoreReturnTypes {
@@ -179,4 +198,87 @@ export const handleScore = async (
     })
 
     return result.data as handleScoreReturnTypes | null
+}
+
+export const handleBotScore = async (
+    data: handleBotScoreTypes,
+    supabase: TypedSupabaseClient
+): Promise<handleScoreReturnTypes | null> => {
+    const result = await supabase.rpc('handlebotscore', {
+        p_matchid: data.matchId,
+        p_userid: data.userId,
+        p_ball: data.ball,
+        p_mynumber: data.myNumber,
+        p_botnumber: data.botNumber,
+    })
+
+    return result.data as handleScoreReturnTypes | null
+}
+
+export const handleUserScore = async (
+    data: handleScoreTypes,
+    supabase: TypedSupabaseClient
+): Promise<handleScoreReturnTypes | null> => {
+    const result = await supabase.rpc('handleuserscore', {
+        p_matchid: data.matchId,
+        p_userid: data.userId,
+        p_ball: data.ball,
+        p_number: data.Number,
+    })
+
+    return result.data as handleScoreReturnTypes | null
+}
+
+export const cleanUpRunsData = async (
+    matchId: string,
+    type: 'user' | 'bot',
+    supabase: TypedSupabaseClient
+) => {
+    try {
+        let result
+
+        if (type === 'user') {
+            // Delete records from `usereachball` for 'user' matches
+            result = await supabase
+                .from('usereachball')
+                .delete()
+                .eq('matchid', matchId)
+
+            if (result.error) {
+                throw new Error(
+                    `Error deleting data from usereachball: ${result.error.message}`
+                )
+            }
+
+            console.log(
+                `Successfully deleted records from usereachball for match ID: ${matchId}`
+            )
+        } else if (type === 'bot') {
+            // Delete records from `runperball` for 'bot' matches
+            result = await supabase
+                .from('runperball')
+                .delete()
+                .eq('match_id', matchId)
+
+            if (result.error) {
+                throw new Error(
+                    `Error deleting data from runperball: ${result.error.message}`
+                )
+            }
+
+            console.log(
+                `Successfully deleted records from runperball for match ID: ${matchId}`
+            )
+        } else {
+            throw new Error(`Invalid match type: ${type}`)
+        }
+
+        return {
+            success: true,
+            message: `Cleanup completed for ${type} match with ID ${matchId}`,
+        }
+    } catch (error) {
+        console.error(`Cleanup failed for match ID: ${matchId}`, error)
+        return { success: false, message: 'error' }
+    }
 }

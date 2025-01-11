@@ -1,17 +1,13 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
-import {
-    MatchData,
-    switchInnings,
-    switchUserInnings,
-    TeamInfo,
-} from '@/queries/matches'
+import { MatchData, switchUserInnings, TeamInfo } from '@/queries/matches'
 import { getSupabaseBrowserClient } from '@/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { RefreshCw, Star, Users } from 'lucide-react'
 import { useParams } from 'next/navigation'
-import { convertBallsToOvers } from './score-card'
+import { useEffect } from 'react'
+import { convertBallsToOvers } from '../botgame/score-card'
 
 const getBattingTeam = (
     battingId: string,
@@ -26,7 +22,11 @@ const getBattingTeam = (
     return null // Return null if no matching team is found
 }
 
-export default function InningsEndedCard() {
+export default function UserInningsEndedCard({
+    setCommentaryResult,
+}: {
+    setCommentaryResult: (result: string) => void
+}) {
     const queryClient = useQueryClient()
     const params: { matchid: string } = useParams()
     const supabase = getSupabaseBrowserClient()
@@ -34,21 +34,38 @@ export default function InningsEndedCard() {
         'match',
         params.matchid,
     ])
-    console.log('type', matchdata?.type)
+    //console.log('type', matchdata?.type)
 
-    const TypeSwitchInnings = async () => {
-        if (matchdata?.type === 'user') {
-            // Call switchUserInnings for user matches
-            return switchUserInnings(params.matchid, supabase)
-        } else if (matchdata?.type === 'bot') {
-            // Call switchInnings for bot matches
-            return switchInnings(params.matchid, supabase)
-        } else {
-            throw new Error('Invalid match type')
+    useEffect(() => {
+        const subscription = supabase
+            .channel('user_request_changes')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'usereachball',
+                    filter: `matchid=eq.${params.matchid}`,
+                },
+                (payload) => {
+                    console.log('payload', payload)
+                    if (payload.eventType === 'INSERT') {
+                        setCommentaryResult('')
+                        queryClient.invalidateQueries({
+                            queryKey: ['match', params.matchid],
+                        })
+                    }
+                }
+            )
+            .subscribe()
+
+        return () => {
+            subscription.unsubscribe()
         }
-    }
+    }, [supabase, queryClient])
+
     const switchInningsMutation = useMutation({
-        mutationFn: () => TypeSwitchInnings(),
+        mutationFn: () => switchUserInnings(params.matchid, supabase),
         onSuccess: (data) => {
             console.log('success', data)
             queryClient.invalidateQueries({
@@ -59,6 +76,7 @@ export default function InningsEndedCard() {
 
     const handleSwitchInnings = () => {
         console.log('swicth')
+        setCommentaryResult('')
         switchInningsMutation.mutate()
     }
 
@@ -71,9 +89,7 @@ export default function InningsEndedCard() {
         matchdata?.my_team,
         matchdata?.opp_team
     )
-    console.log('dataaaa', battingTeam)
 
-    console.log('matchdat', matchdata)
     return (
         <Card className="w-full max-w-md mx-auto">
             <CardContent className="space-y-4">

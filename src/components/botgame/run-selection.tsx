@@ -1,8 +1,8 @@
 'use client'
 import {
-    handleScore,
+    handleBotScore,
+    handleBotScoreTypes,
     handleScoreReturnTypes,
-    handleScoreTypes,
     MatchData,
 } from '@/queries/matches'
 import { botQuery } from '@/queries/queries'
@@ -51,7 +51,8 @@ export const RunSelectionBlock = ({ matchId }: RunSelectionTypes) => {
     const [commentaryResult, setCommentaryResult] = useState('')
 
     const handleScoreMutation = useMutation({
-        mutationFn: (data: handleScoreTypes) => handleScore(data, supabase),
+        mutationFn: (data: handleBotScoreTypes) =>
+            handleBotScore(data, supabase),
         onSuccess: (data: handleScoreReturnTypes | null) => {
             //queryClient.invalidateQueries({ queryKey: ['match', matchId] })
             console.log('Score updated successfully:', data)
@@ -78,32 +79,22 @@ export const RunSelectionBlock = ({ matchId }: RunSelectionTypes) => {
     // If neither user nor bot is found, return loading state
     if (!user && !bot && !matchData) return <Loader />
 
-    console.log('data', user?.id, bot?.id)
-
     const handleSelection = (numb: number) => {
         setLoading(true)
 
         if (matchData?.type == 'bot') {
             const botnumb = generateRandomBotNumber()
-            if (bot?.id) {
+            console.log('botnumber-mynumber', botnumb, numb)
+            if (user?.id) {
                 // Check if bot.id exists
                 handleScoreMutation.mutate({
                     matchId: matchId,
                     ball: parseInt(matchData?.current_ball ?? '0') + 1,
-                    userId: bot.id, // Use bot.id here after checking
-                    Number: botnumb,
+                    userId: user?.id, // Use bot.id here after checking
+                    myNumber: numb,
+                    botNumber: botnumb,
                 })
             }
-        }
-
-        if (user?.id) {
-            // Check if user.id exists
-            handleScoreMutation.mutate({
-                matchId: matchId,
-                ball: parseInt(matchData?.current_ball ?? '0') + 1,
-                userId: user.id, // Use user.id here after checking
-                Number: numb,
-            })
         }
     }
 

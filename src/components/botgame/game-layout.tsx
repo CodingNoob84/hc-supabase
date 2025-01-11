@@ -49,7 +49,7 @@ export const GameLayout = ({ matchId }: { matchId: string }) => {
     }
 
     if (!data) {
-        return <div>Error loading match data.</div>
+        return <Loader />
     }
 
     return (

@@ -46,6 +46,27 @@ export const getUser = async ({
     }
 }
 
+export const getUserById = async ({
+    oppUserId,
+    supabase,
+}: {
+    oppUserId: string
+    supabase: TypedSupabaseClient
+}) => {
+    try {
+        const { data: userData } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', oppUserId)
+            .single()
+
+        return userData as UserInfo // Return user data
+    } catch (err) {
+        console.error('Error fetching user data:', err)
+        throw err // Propagate error to be handled by React Query
+    }
+}
+
 export interface updateTeamTypes {
     userId: string
     teamname: string

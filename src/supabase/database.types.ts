@@ -247,6 +247,7 @@ export type Database = {
       usereachball: {
         Row: {
           ball: number
+          battingid: string | null
           battingnumber: number | null
           bowlingnumber: number | null
           created_at: string
@@ -259,6 +260,7 @@ export type Database = {
         }
         Insert: {
           ball: number
+          battingid?: string | null
           battingnumber?: number | null
           bowlingnumber?: number | null
           created_at?: string
@@ -271,6 +273,7 @@ export type Database = {
         }
         Update: {
           ball?: number
+          battingid?: string | null
           battingnumber?: number | null
           bowlingnumber?: number | null
           created_at?: string
@@ -281,7 +284,22 @@ export type Database = {
           toss?: boolean | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "usereachball_battingid_fkey"
+            columns: ["battingid"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "usereachball_matchid_fkey"
+            columns: ["matchid"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       userpresence: {
         Row: {
@@ -437,6 +455,13 @@ export type Database = {
         }
         Returns: Json
       }
+      cleanup_balldata: {
+        Args: {
+          match_type: string
+          match_id: string
+        }
+        Returns: undefined
+      }
       get_users_with_requests: {
         Args: {
           my_user_id: string
@@ -451,6 +476,7 @@ export type Database = {
           last_seen: string
           req_id: string
           req_status: string
+          gamemode: string
         }[]
       }
       getmatchdata: {
@@ -459,7 +485,26 @@ export type Database = {
         }
         Returns: Json
       }
+      handlebotscore: {
+        Args: {
+          p_matchid: string
+          p_userid: string
+          p_ball: number
+          p_mynumber: number
+          p_botnumber: number
+        }
+        Returns: Json
+      }
       handlescore: {
+        Args: {
+          p_matchid: string
+          p_userid: string
+          p_ball: number
+          p_number: number
+        }
+        Returns: Json
+      }
+      handleuserscore: {
         Args: {
           p_matchid: string
           p_userid: string
@@ -492,6 +537,12 @@ export type Database = {
         Returns: Json
       }
       switchinnings: {
+        Args: {
+          p_matchid: string
+        }
+        Returns: Json
+      }
+      switchuserinnings: {
         Args: {
           p_matchid: string
         }

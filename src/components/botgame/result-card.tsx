@@ -1,14 +1,17 @@
 'use client'
 import { Card, CardContent } from '@/components/ui/card'
-import { MatchData } from '@/queries/matches'
+import { cleanUpRunsData, MatchData } from '@/queries/matches'
+import { getSupabaseBrowserClient } from '@/supabase/client'
 import { useQueryClient } from '@tanstack/react-query'
 import { Frown, Trophy } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { useEffect } from 'react'
 import { Button } from '../ui/button'
 
 export default function ResultCard() {
     const params = useParams()
+    const supabase = getSupabaseBrowserClient()
     const queryClient = useQueryClient()
     const user: { id: string } | undefined = queryClient.getQueryData(['user'])
     const matchdata: MatchData | undefined = queryClient.getQueryData([
@@ -18,6 +21,25 @@ export default function ResultCard() {
     console.log('result', user, matchdata)
 
     const isWinner = matchdata?.winner == user?.id
+
+    useEffect(() => {
+        if (matchdata) {
+            const cleanupData = async () => {
+                try {
+                    const result = await cleanUpRunsData(
+                        matchdata.match_id,
+                        matchdata.type,
+                        supabase
+                    )
+                    console.log('Cleanup result:', result)
+                } catch (error) {
+                    console.error('Error during cleanup:', error)
+                }
+            }
+
+            cleanupData() // Call the async function
+        }
+    }, [matchdata, supabase])
 
     return (
         <div className="max-w-md mx-auto flex flex-col gap-2">

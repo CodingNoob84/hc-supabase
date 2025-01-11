@@ -30,7 +30,7 @@ export const DisplayCard = ({
     oppNumber,
     battingNumber,
 }: DisplayCardTypes) => {
-    //console.log('display', battingNumber)
+    //console.log('display', myNumber)
     return (
         <Card
             className={`w-full max-w-md mx-auto ${getBgColor(
