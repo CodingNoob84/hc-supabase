@@ -60,6 +60,7 @@ export interface MatchData {
     current_ball: string
     winner: string
     result_by: string
+    isdraw: boolean
 }
 
 export const getMatchData = async (
