@@ -1,5 +1,4 @@
 import { TypedSupabaseClient } from '@/supabase/types'
-import { redirect } from 'next/navigation'
 
 export interface UserInfo {
     id: string
@@ -25,11 +24,11 @@ export const getUser = async ({
         } = await supabase.auth.getUser()
 
         if (userError) {
-            redirect('/login')
+            return null
         }
 
         if (!user) {
-            redirect('/login')
+            return null
         }
 
         // Step 2: Query the "users" table to fetch user details
