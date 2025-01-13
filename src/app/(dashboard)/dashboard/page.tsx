@@ -1,5 +1,6 @@
 import { TeamCard } from '@/components/dashboard/team-card'
 import { Button } from '@/components/ui/button'
+import { Users } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function Dashboard() {
@@ -10,7 +11,15 @@ export default async function Dashboard() {
                 <Link href="/dashboard/botgame">Play with Bot</Link>
             </Button>
             <Button className="w-full max-w-md mx-auto" asChild>
-                <Link href="/dashboard/usersgame">Play with Friends</Link>
+                <Link
+                    href="/dashboard/usersgame"
+                    className="flex items-center justify-center"
+                >
+                    <span className="flex items-center">
+                        <Users className="mr-2 h-5 w-5" />
+                        Play with Friends
+                    </span>
+                </Link>
             </Button>
             <Button className="w-full max-w-md mx-auto" asChild>
                 <Link href="/dashboard/matchhistory">My Match History</Link>
@@ -18,7 +27,6 @@ export default async function Dashboard() {
             <Button className="w-full max-w-md mx-auto">
                 <Link href="/dashboard/review">Give us Review</Link>
             </Button>
-            {/* <ChatPresence user={user} /> */}
         </div>
     )
 }
