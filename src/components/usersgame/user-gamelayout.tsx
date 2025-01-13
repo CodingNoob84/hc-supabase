@@ -13,7 +13,7 @@ import { UserRunSelectionBlock } from './user-run-selection'
 export const UserGameLayout = ({ matchId }: { matchId: string }) => {
     const supabase = getSupabaseBrowserClient()
     const queryClient = useQueryClient()
-    const [showToss, setShowToss] = useState(false)
+    const [showToss, setShowToss] = useState(true)
     const user: UserInfo | undefined = queryClient.getQueryData(['user'])
     const { data, isLoading } = useQuery<MatchData | null>({
         queryKey: ['match', matchId],

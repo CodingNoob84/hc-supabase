@@ -1,5 +1,6 @@
 import { MatchData } from '@/queries/matches'
 import { AvatarImage } from '@radix-ui/react-avatar'
+import Image from 'next/image'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { Badge } from '../ui/badge'
 import { Card, CardContent } from '../ui/card'
@@ -7,7 +8,8 @@ import { TeamInfo } from './game-layout'
 
 interface TeamCardProps {
     team: TeamInfo
-    isReverse?: boolean // If true, display the team on the right side
+    isReverse?: boolean
+    isBatting: boolean
 }
 
 export const convertBallsToOvers = (balls: number) => {
@@ -21,7 +23,7 @@ export const BottomContent = () => {
     return <div className="flex flex-row justify-between text-xs">content</div>
 }
 
-const TeamCard = ({ team, isReverse }: TeamCardProps) => (
+const TeamCard = ({ team, isReverse, isBatting }: TeamCardProps) => (
     <div
         className={`flex flex-col items-start space-y-2 ${
             isReverse ? 'items-end' : ''
@@ -34,7 +36,28 @@ const TeamCard = ({ team, isReverse }: TeamCardProps) => (
             } `}
         >
             <div className="font-semibold text-sm">{team.display_name}</div>
-            <div className="text-sm text-gray-600">{team.teamname}</div>
+            <div
+                className={`text-sm text-gray-600 flex flex-row gap-1 ${
+                    isReverse ? 'flex-row-reverse' : ''
+                }`}
+            >
+                {team.teamname}
+                {isBatting ? (
+                    <Image
+                        src="/images/cricket-bat.png"
+                        alt="Bat"
+                        width="20"
+                        height="10"
+                    />
+                ) : (
+                    <Image
+                        src="/images/cricket-ball.png"
+                        alt="Bat"
+                        width="20"
+                        height="10"
+                    />
+                )}
+            </div>
         </div>
 
         {/* Team Score */}
@@ -55,6 +78,7 @@ const TeamCard = ({ team, isReverse }: TeamCardProps) => (
                     Overs {convertBallsToOvers(team.balls)}
                 </div>
             </div>
+            <div></div>
         </div>
     </div>
 )
@@ -76,7 +100,10 @@ export const ScoreCard = ({ data }: { data: MatchData }) => {
                     </Badge>
                 </div>
                 <div className="flex flex-row justify-between items-center">
-                    <TeamCard team={data.opp_team} />
+                    <TeamCard
+                        team={data.opp_team}
+                        isBatting={data.batting_id === data.opp_team.id}
+                    />
                     <div className="flex flex-col items-center space-y-2">
                         {data.is_timer && (
                             <Badge
@@ -89,7 +116,11 @@ export const ScoreCard = ({ data }: { data: MatchData }) => {
 
                         <Badge>vs</Badge>
                     </div>
-                    <TeamCard team={data.my_team} isReverse />
+                    <TeamCard
+                        team={data.my_team}
+                        isReverse
+                        isBatting={data.batting_id === data.my_team.id}
+                    />
                 </div>
                 <BottomContent />
             </CardContent>
