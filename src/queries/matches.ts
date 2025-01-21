@@ -61,6 +61,7 @@ export interface MatchData {
     winner: string
     result_by: string
     isdraw: boolean
+    isstarted: boolean
 }
 
 export const getMatchData = async (
@@ -281,5 +282,28 @@ export const cleanUpRunsData = async (
     } catch (error) {
         console.error(`Cleanup failed for match ID: ${matchId}`, error)
         return { success: false, message: 'error' }
+    }
+}
+
+export const updateMatchStarted = async (
+    matchId: string,
+    supabase: TypedSupabaseClient
+) => {
+    try {
+        // Update the "isstarted" column to true for the given matchId
+        const { data, error } = await supabase
+            .from('matches')
+            .update({ isstarted: true })
+            .eq('id', matchId)
+
+        if (error) {
+            console.error('Error updating match started status:', error)
+            throw new Error(error.message)
+        }
+
+        return data // Optionally return the updated data
+    } catch (err) {
+        console.error('Unexpected error:', err)
+        throw err
     }
 }

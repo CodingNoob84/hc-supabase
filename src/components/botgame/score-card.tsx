@@ -20,7 +20,7 @@ export const convertBallsToOvers = (balls: number) => {
 }
 
 export const BottomContent = () => {
-    return <div className="flex flex-row justify-between text-xs">content</div>
+    return <div className="flex flex-row justify-between text-xs"></div>
 }
 
 const TeamCard = ({ team, isReverse, isBatting }: TeamCardProps) => (
@@ -41,21 +41,26 @@ const TeamCard = ({ team, isReverse, isBatting }: TeamCardProps) => (
                     isReverse ? 'flex-row-reverse' : ''
                 }`}
             >
-                {team.teamname}
                 {isBatting ? (
-                    <Image
-                        src="/images/cricket-bat.png"
-                        alt="Bat"
-                        width="20"
-                        height="10"
-                    />
+                    <>
+                        <span>Batting</span>
+                        <Image
+                            src="/images/cricket-bat.png"
+                            alt="Bat"
+                            width="20"
+                            height="10"
+                        />
+                    </>
                 ) : (
-                    <Image
-                        src="/images/cricket-ball.png"
-                        alt="Bat"
-                        width="20"
-                        height="10"
-                    />
+                    <>
+                        <span>Blowing</span>
+                        <Image
+                            src="/images/cricket-ball.png"
+                            alt="Bat"
+                            width="20"
+                            height="10"
+                        />
+                    </>
                 )}
             </div>
         </div>

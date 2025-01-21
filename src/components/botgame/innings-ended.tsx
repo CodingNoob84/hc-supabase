@@ -9,7 +9,7 @@ import {
 } from '@/queries/matches'
 import { getSupabaseBrowserClient } from '@/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { RefreshCw, Star, Users } from 'lucide-react'
+import { RefreshCw, Users } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { convertBallsToOvers } from './score-card'
 
@@ -85,14 +85,8 @@ export default function InningsEndedCard() {
                         <div className="flex items-center space-x-2">
                             <Users className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                             <h2 className="text-md font-semibold text-indigo-800 dark:text-indigo-200 truncate">
-                                {battingTeam?.teamname}
-                            </h2>
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                            <Star className="w-4 h-4 mr-1 text-yellow-500" />
-                            <span className="truncate">
                                 {battingTeam?.display_name}
-                            </span>
+                            </h2>
                         </div>
                     </div>
                     <div className="text-right">

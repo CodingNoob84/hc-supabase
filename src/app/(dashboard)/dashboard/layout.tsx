@@ -16,13 +16,12 @@ export default async function DashboardLayout({
     children: React.ReactNode
 }>) {
     const supabase = await getSupabaseServer()
+
     const queryClient = new QueryClient()
     const user = await queryClient.ensureQueryData({
         queryKey: userQuery.key,
         queryFn: () => userQuery.func({ supabase }),
     })
-
-    console.log('user-dashbaordlayout', user)
 
     if (!user) {
         redirect('/login')

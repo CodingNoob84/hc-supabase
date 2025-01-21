@@ -47,6 +47,8 @@ export type Database = {
           is_completed: boolean | null
           is_innings_over: boolean | null
           is_timer: boolean
+          isdraw: boolean | null
+          isstarted: boolean | null
           max_overs: number
           max_wickets: number
           result: string | null
@@ -70,6 +72,8 @@ export type Database = {
           is_completed?: boolean | null
           is_innings_over?: boolean | null
           is_timer?: boolean
+          isdraw?: boolean | null
+          isstarted?: boolean | null
           max_overs: number
           max_wickets: number
           result?: string | null
@@ -93,6 +97,8 @@ export type Database = {
           is_completed?: boolean | null
           is_innings_over?: boolean | null
           is_timer?: boolean
+          isdraw?: boolean | null
+          isstarted?: boolean | null
           max_overs?: number
           max_wickets?: number
           result?: string | null
@@ -484,6 +490,19 @@ export type Database = {
           match_id: string
         }
         Returns: Json
+      }
+      getuserstats: {
+        Args: {
+          userid: string
+        }
+        Returns: {
+          display_name: string
+          email: string
+          avatar_url: string
+          matches_played: number
+          matches_won: number
+          matches_lost: number
+        }[]
       }
       handlebotscore: {
         Args: {

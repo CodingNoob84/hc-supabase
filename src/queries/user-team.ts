@@ -300,3 +300,40 @@ export const upsertReqStatus = async (
         return { result: 'error' } // Return { result: "error" } for unexpected errors
     }
 }
+
+interface UserStats {
+    display_name: string
+    email: string
+    avatar_url: string
+    matches_played: number
+    matches_won: number
+    matches_lost: number
+}
+
+export async function getUserStats(
+    supabase: TypedSupabaseClient,
+    userId: string
+): Promise<UserStats | null> {
+    try {
+        // Call the RPC function
+        const { data, error } = await supabase.rpc('getuserstats', {
+            userid: userId,
+        })
+
+        if (error) {
+            console.error('Error fetching user stats:', error.message)
+            return null
+        }
+
+        if (data && data.length > 0) {
+            // Return the first row (since it returns one row per user)
+            return data[0] as UserStats
+        } else {
+            console.warn('No stats found for the user')
+            return null
+        }
+    } catch (err) {
+        console.error('Unexpected error fetching user stats:', err)
+        return null
+    }
+}

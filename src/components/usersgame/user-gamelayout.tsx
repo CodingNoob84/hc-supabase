@@ -34,8 +34,9 @@ export const UserGameLayout = ({ matchId }: { matchId: string }) => {
     return (
         <div className="flex flex-col gap-4 p-2">
             <ScoreCard data={data} />
-            {showToss ? (
+            {showToss && !data.isstarted ? (
                 <ShowTossCard
+                    matchId={matchId}
                     myId={user.id}
                     tossWinner={data.toss_winner}
                     tossChoice={data.toss_choice}
