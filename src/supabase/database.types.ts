@@ -468,6 +468,35 @@ export type Database = {
         }
         Returns: undefined
       }
+      get_all_matches_by_userid: {
+        Args: {
+          userid: string
+        }
+        Returns: {
+          id: string
+          winner: string
+          result: string
+          result_by: string
+          type: string
+          user_one: Json
+          user_two: Json
+        }[]
+      }
+      get_all_users_match_stats: {
+        Args: {
+          top: number
+          minimummatches: number
+        }
+        Returns: {
+          user_id: string
+          display_name: string
+          avatar_url: string
+          matches_played: number
+          matches_won: number
+          matches_lost: number
+          winning_percentage: number
+        }[]
+      }
       get_users_with_requests: {
         Args: {
           my_user_id: string
@@ -480,9 +509,24 @@ export type Database = {
           teamname: string
           presence_status: string
           last_seen: string
+          matchid: string
           req_id: string
           req_status: string
           gamemode: string
+        }[]
+      }
+      getallmatches_byuserid: {
+        Args: {
+          userid: string
+        }
+        Returns: {
+          id: string
+          winner: string
+          result: string
+          result_by: string
+          type: string
+          user_one: Json
+          user_two: Json
         }[]
       }
       getmatchdata: {

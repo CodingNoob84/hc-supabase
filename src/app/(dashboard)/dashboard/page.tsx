@@ -1,3 +1,5 @@
+'use client'
+import { AdminBtns } from '@/components/dashboard/admin-btns'
 import { UserStatsCard } from '@/components/dashboard/user-stats-card'
 import { Button } from '@/components/ui/button'
 import { Users } from 'lucide-react'
@@ -24,9 +26,13 @@ export default function Dashboard() {
             <Button className="w-full max-w-md mx-auto" asChild>
                 <Link href="/dashboard/matchhistory">My Match History</Link>
             </Button>
+            <Button className="w-full max-w-md mx-auto" asChild>
+                <Link href="/dashboard/leaderboard">LeaderBoard</Link>
+            </Button>
             <Button className="w-full max-w-md mx-auto">
                 <Link href="/dashboard/review">Give us Review</Link>
             </Button>
+            <AdminBtns />
         </div>
     )
 }

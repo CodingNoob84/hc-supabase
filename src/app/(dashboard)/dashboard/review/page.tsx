@@ -1,7 +1,7 @@
 import ReviewCard from '@/components/review/review-card'
 import { Button } from '@/components/ui/button'
 import { userQuery } from '@/queries/queries'
-import { getReviewByUserId } from '@/queries/user-team'
+import { getReviewByUserId } from '@/queries/reviews'
 import { getSupabaseServer } from '@/supabase/server'
 import { QueryClient } from '@tanstack/react-query'
 import Link from 'next/link'

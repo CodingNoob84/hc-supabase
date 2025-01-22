@@ -115,85 +115,6 @@ export const getBot = async ({
     return data as BotInfo
 }
 
-export const getReviewByUserId = async ({
-    userId,
-    supabase,
-}: {
-    userId: string
-    supabase: TypedSupabaseClient
-}) => {
-    const { data } = await supabase
-        .from('reviews')
-        .select('*')
-        .eq('user_id', userId)
-        .single()
-    return data
-}
-
-export interface UpdateReviewTypes {
-    userId: string
-    rating: number
-    description: string
-}
-
-export const updateReview = async ({
-    data,
-    supabase,
-}: {
-    data: UpdateReviewTypes
-    supabase: TypedSupabaseClient
-}) => {
-    try {
-        // First, check if a review already exists for the user
-        const { data: existingReview, error: fetchError } = await supabase
-            .from('reviews') // Assuming your table is called 'reviews'
-            .select('*')
-            .eq('user_id', data.userId)
-
-        if (fetchError) throw fetchError
-
-        console.log('existingReview', existingReview)
-
-        if (existingReview.length > 0) {
-            // If a review already exists, update it with the new data
-            const { error: updateError } = await supabase
-                .from('reviews')
-                .update({
-                    rating: data.rating,
-                    description: data.description,
-                    updated_at: new Date().toISOString(), // Update timestamp for update
-                })
-                .eq('user_id', data.userId)
-
-            if (updateError) throw updateError
-
-            return { success: true, message: 'Review updated successfully' }
-        } else {
-            // If no review exists, insert a new one
-            const { data: insertdata, error: insertError } = await supabase
-                .from('reviews')
-                .insert([
-                    {
-                        user_id: data.userId,
-                        rating: data.rating,
-                        description: data.description,
-                        created_at: new Date().toISOString(), // Set creation timestamp
-                    },
-                ])
-            console.log('datainsert', insertdata)
-            if (insertError) throw insertError
-
-            return { success: true, message: 'Review added successfully' }
-        }
-    } catch (error) {
-        console.error('Error updating review:', error)
-        return {
-            success: false,
-            message: 'An error occurred while updating the review',
-        }
-    }
-}
-
 // export const getAllUsers = async ({
 //     supabase,
 // }: {
@@ -241,6 +162,7 @@ export interface UserWithRequest {
     presence_status: string | null // `null` if no presence record exists
     last_seen: string | null // `null` if no presence record exists
     req_id: string | null
+    matchid: string | null
     req_status: RequsetStatusType
     gamemode: GameMode
 }
@@ -334,6 +256,42 @@ export async function getUserStats(
         }
     } catch (err) {
         console.error('Unexpected error fetching user stats:', err)
+        return null
+    }
+}
+
+export interface UserMatchStats {
+    user_id: string
+    display_name: string
+    avatar_url: string
+    matches_played: number
+    matches_won: number
+    matches_lost: number
+    winning_percentage: number
+}
+
+export const getAllUsersMatchStats = async (
+    supabase: TypedSupabaseClient,
+    top: number,
+    minimummatches: number
+): Promise<UserMatchStats[] | null> => {
+    try {
+        const { data, error } = await supabase.rpc(
+            'get_all_users_match_stats',
+            {
+                top,
+                minimummatches,
+            }
+        )
+
+        if (error) {
+            console.error('Error fetching match stats:', error.message)
+            return null
+        }
+
+        return data as UserMatchStats[]
+    } catch (error) {
+        console.error('Unexpected error fetching match stats:', error)
         return null
     }
 }

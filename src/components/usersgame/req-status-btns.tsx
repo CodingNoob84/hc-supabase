@@ -1,5 +1,6 @@
 import { GameMode } from '@/queries/user-team'
 import { Check, Clock, Info, Loader2, PlayCircle, X } from 'lucide-react'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 
@@ -319,6 +320,20 @@ export const PlayingBtn = () => {
         >
             <Loader2 className="w-5 h-5 mr-2 animate-spin" />
             Currently Playing
+        </Button>
+    )
+}
+
+export const ContinuePlayingBtn = ({ matchId }: { matchId: string }) => {
+    return (
+        <Button
+            variant="default"
+            className="w-full max-w-md mx-auto py-2 cursor-not-allowed"
+            asChild
+        >
+            <Link href={`/dashboard/usersgame/${matchId}`}>
+                Continue to Play
+            </Link>
         </Button>
     )
 }

@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query'
 import { PlayCircle, Trophy, X } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Card, CardContent, CardHeader } from '../ui/card'
+import { Skeleton } from '../ui/skeleton'
 import { CircularProgress } from './circular-progress'
 
 const calculateWinLossRatio = (won: number, total: number) => {
@@ -40,8 +41,30 @@ export const UserStatsCard = () => {
     if (isUserLoading || isStatsLoading) {
         return (
             <Card className="w-full max-w-md mx-auto overflow-hidden">
+                <CardHeader className="flex flex-row justify-between p-4">
+                    <div className="w-full flex flex-row items-center justify-between space-x-4">
+                        <div className="flex flex-row gap-2">
+                            <Skeleton className="h-16 w-16 rounded-full" />
+                            <div>
+                                <Skeleton className="h-6 w-32 mb-1" />
+                                <Skeleton className="h-4 w-48" />
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col items-center justify-center">
+                            <Skeleton className="h-12 w-12 rounded-full" />
+                            <span className="text-xs text-muted-foreground mt-1">
+                                Win Ratio
+                            </span>
+                        </div>
+                    </div>
+                </CardHeader>
                 <CardContent>
-                    <p>Loading user stats...</p>
+                    <div className="grid grid-cols-3 gap-2 pt-2 border-t">
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-full" />
+                    </div>
                 </CardContent>
             </Card>
         )
@@ -65,23 +88,25 @@ export const UserStatsCard = () => {
     return (
         <Card className="w-full max-w-md mx-auto overflow-hidden">
             <CardHeader className="flex flex-row justify-between p-4">
-                <div className="flex items-center space-x-4">
-                    <Avatar className="h-16 w-16 rounded-full border-4 border-primary shadow-lg">
-                        <AvatarImage
-                            src={userstats.avatar_url ?? ''}
-                            alt={userstats.display_name ?? 'User Avatar'}
-                        />
-                        <AvatarFallback>
-                            {getInitials(userstats.display_name ?? 'User')}
-                        </AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <h2 className="text-xl font-bold">
-                            {userstats.display_name ?? 'Unknown User'}
-                        </h2>
-                        <p className="text-xs text-muted-foreground">
-                            {userstats.email ?? 'No email available'}
-                        </p>
+                <div className="w-full flex flex-row items-center justify-between space-x-4">
+                    <div className="flex flex-row gap-2">
+                        <Avatar className="h-16 w-16 rounded-full border-4 border-primary shadow-lg">
+                            <AvatarImage
+                                src={userstats.avatar_url ?? ''}
+                                alt={userstats.display_name ?? 'User Avatar'}
+                            />
+                            <AvatarFallback>
+                                {getInitials(userstats.display_name ?? 'User')}
+                            </AvatarFallback>
+                        </Avatar>
+                        <div>
+                            <h2 className="text-xl font-bold">
+                                {userstats.display_name ?? 'Unknown User'}
+                            </h2>
+                            <p className="text-xs text-muted-foreground">
+                                {userstats.email ?? 'No email available'}
+                            </p>
+                        </div>
                     </div>
 
                     <div className="flex flex-col items-center justify-center">

@@ -307,3 +307,42 @@ export const updateMatchStarted = async (
         throw err
     }
 }
+
+export interface MatchScore {
+    totalruns: number
+    totalwickets: number
+    totalballs: number
+}
+
+export interface MatchUser {
+    display_name: string | null
+    avatar_url: string | null
+    email: string | null
+    score: MatchScore
+}
+
+export interface MatchDetails {
+    id: string | null
+    winner: string | null
+    result: 'won' | 'lost' | 'draw' | 'none'
+    result_by: string | null
+    type: string | null
+    user_one: MatchUser | null
+    user_two: MatchUser | null
+}
+
+export const getAllMatchesByUserId = async (
+    userId: string,
+    supabase: TypedSupabaseClient
+): Promise<MatchDetails[] | null> => {
+    const { data, error } = await supabase.rpc('get_all_matches_by_userid', {
+        userid: userId,
+    })
+
+    if (error) {
+        console.error('Error fetching matches:', error.message)
+        throw new Error(error.message)
+    }
+
+    return data as MatchDetails[] | null
+}

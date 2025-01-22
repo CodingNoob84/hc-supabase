@@ -9,7 +9,7 @@ import { Card, CardContent } from '../ui/card'
 import {
     AcceptRejectbtn,
     Cancelbtn,
-    PlayingBtn,
+    ContinuePlayingBtn,
     PlayRequestBtn,
     ToPlayBtn,
     WaitingBtn,
@@ -134,7 +134,10 @@ export const UserReqCard = ({
                             handleCancel={cancelPlayRequest}
                         />
                     )}
-                    {user.req_status === 'play' && <PlayingBtn />}
+                    {/* {user.req_status === 'play' && <PlayingBtn />} */}
+                    {user.req_status === 'play' && user.matchid && (
+                        <ContinuePlayingBtn matchId={user.matchid} />
+                    )}
                 </div>
             </CardContent>
         </Card>

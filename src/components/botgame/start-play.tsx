@@ -7,7 +7,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
 import { getInitials } from '@/lib/utils'
 import {
     matchInit,
@@ -43,7 +42,7 @@ export const StartPlay = () => {
     })
 
     const [matchType, setMatchType] = useState('one')
-    const [timerEnabled, setTimerEnabled] = useState(false)
+    // const [timerEnabled, setTimerEnabled] = useState(false)
 
     const handleInitPlay = () => {
         if (user && bot) {
@@ -53,7 +52,7 @@ export const StartPlay = () => {
                 type: 'bot',
                 max_overs: matchType == 'one' ? 1 : 5,
                 max_wickets: matchType == 'one' ? 2 : 5,
-                is_timer: timerEnabled,
+                is_timer: false,
             }
             console.log('onsubmit', data)
             matchInitMutation.mutate(data)
@@ -142,7 +141,7 @@ export const StartPlay = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="space-y-3">
+                {/* <div className="space-y-3">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                             <Timer className="h-4 w-4" />
@@ -160,7 +159,7 @@ export const StartPlay = () => {
                             count!
                         </div>
                     )}
-                </div>
+                </div> */}
             </CardContent>
             <CardFooter>
                 <Button
