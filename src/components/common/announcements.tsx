@@ -3,18 +3,39 @@
 import { X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-const DURATION_ANNOUNCEMENTS = 10
+const DURATION_ANNOUNCEMENTS = 10 // Duration to display the announcement in seconds
+const REAPPEAR_INTERVAL = 5 * 60 // Half an hour in milliseconds
 
 export default function AnnouncementCard() {
-    const [isVisible, setIsVisible] = useState(true)
+    const [isVisible, setIsVisible] = useState(false)
 
     useEffect(() => {
+        const lastShown = localStorage.getItem('announcement_last_shown')
+        const now = Date.now()
+
+        // Check if the announcement should be shown
+        if (
+            !lastShown ||
+            now - parseInt(lastShown) >= REAPPEAR_INTERVAL * 1000
+        ) {
+            setIsVisible(true)
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!isVisible) return
+
+        // Set a timer to automatically hide the announcement
         const timer = setTimeout(() => {
             setIsVisible(false)
-        }, DURATION_ANNOUNCEMENTS * 1000) // 10 seconds
+            localStorage.setItem(
+                'announcement_last_shown',
+                Date.now().toString()
+            )
+        }, DURATION_ANNOUNCEMENTS * 1000)
 
         return () => clearTimeout(timer)
-    }, [])
+    }, [isVisible])
 
     if (!isVisible) return null
 
@@ -26,7 +47,13 @@ export default function AnnouncementCard() {
                 aria-live="polite"
             >
                 <button
-                    onClick={() => setIsVisible(false)}
+                    onClick={() => {
+                        setIsVisible(false)
+                        localStorage.setItem(
+                            'announcement_last_shown',
+                            Date.now().toString()
+                        )
+                    }}
                     className="absolute top-2 right-2 text-primary-foreground/80 hover:text-primary-foreground"
                     aria-label="Close announcement"
                 >
