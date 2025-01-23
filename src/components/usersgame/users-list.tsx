@@ -161,13 +161,26 @@ export default function FriendsList({
             router.push(`/dashboard/usersgame/${matchId}`)
         }, 0)
     }
+    const sortedFriends = [...friends].sort((a, b) => {
+        const aPriority =
+            (a.presence_status === 'online' ? 2 : 0) +
+            (a.req_status != 'none' ? 1 : 0)
+        const bPriority =
+            (b.presence_status === 'online' ? 2 : 0) +
+            (b.req_status != 'none' ? 1 : 0)
+
+        // Sort by combined priority (higher priority first)
+        return bPriority - aPriority
+    })
+
+    console.log('friends', sortedFriends)
 
     return (
         <>
             <UpdateUserPresence myId={myId} setFriends={setFriends} />
             <div className="w-full max-w-md mx-auto space-y-4">
                 <h2 className="text-2xl font-bold mb-4">Friends List</h2>
-                {friends.map((_user, i) => (
+                {sortedFriends.map((_user, i) => (
                     <UserReqCard key={i} myId={myId} user={_user} />
                 ))}
             </div>

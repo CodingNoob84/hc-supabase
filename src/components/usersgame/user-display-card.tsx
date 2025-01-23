@@ -118,9 +118,11 @@ export const UserDisplayCard = ({
     const handleSelect = (numb: number) => setSelectedNumber(numb)
 
     const handleSubmit = () => {
-        setDisable(true)
-        setUserNumber(selectedNumber)
-        handleSelection(selectedNumber)
+        if (selectedNumber != 5) {
+            setDisable(true)
+            setUserNumber(selectedNumber)
+            handleSelection(selectedNumber)
+        }
     }
 
     return (
