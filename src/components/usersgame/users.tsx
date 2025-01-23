@@ -26,9 +26,9 @@ export const Users = () => {
         isLoading: isUsersLoading,
         error: usersError,
     } = useQuery({
-        queryKey: user ? ['allusers', user.id] : [], // Only fetch when user is available
+        queryKey: ['allusers', userId], // Only fetch when user is available
         queryFn: () => getAllUsersWithRequests(supabase, userId as string),
-        enabled: !!user, // Ensures this query only runs after the user is fetched
+        enabled: !!userId, // Ensures this query only runs after the user is fetched
     })
 
     // Loading and error states

@@ -11,6 +11,7 @@ export const ListMatches = ({ userId }: { userId: string }) => {
         queryFn: () => getAllMatchesByUserId(userId, supabase),
         enabled: !!userId, // Only fetch when `userdata?.id` is available
     })
+    //console.log('allMatches', allMatches)
 
     if (isLoading) {
         return <MatchcardSkeleton />

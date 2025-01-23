@@ -173,15 +173,15 @@ export default function FriendsList({
         return bPriority - aPriority
     })
 
-    console.log('friends', sortedFriends)
+    //console.log('friends', sortedFriends)
 
     return (
         <>
             <UpdateUserPresence myId={myId} setFriends={setFriends} />
             <div className="w-full max-w-md mx-auto space-y-4">
                 <h2 className="text-2xl font-bold mb-4">Friends List</h2>
-                {sortedFriends.map((_user, i) => (
-                    <UserReqCard key={i} myId={myId} user={_user} />
+                {sortedFriends.map((_user) => (
+                    <UserReqCard key={_user.user_id} myId={myId} user={_user} />
                 ))}
             </div>
         </>

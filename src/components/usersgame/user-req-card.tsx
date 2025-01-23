@@ -94,7 +94,7 @@ export const UserReqCard = ({
                             </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                            {user.teamname || 'No Team'}
+                            {user.email || 'No Email'}
                         </p>
                     </div>
                 </div>
