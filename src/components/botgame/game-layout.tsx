@@ -43,6 +43,7 @@ export const GameLayout = ({ matchId }: { matchId: string }) => {
         queryKey: ['match', matchId],
         queryFn: async () => await getMatchData(matchId, supabase),
     })
+    console.log('matchdata', data)
 
     if (isLoading && !user) {
         return <Loader />

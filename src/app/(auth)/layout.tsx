@@ -1,7 +1,6 @@
 import { getSupabaseServer } from '@/supabase/server'
-import { redirect } from 'next/navigation'
 
-export default async function WebLayout({
+export default async function AuthLayout({
     children,
 }: Readonly<{
     children: React.ReactNode
@@ -11,8 +10,10 @@ export default async function WebLayout({
         data: { user },
     } = await supabase.auth.getUser()
 
-    if (!user) {
-        redirect('/signup')
-    }
+    console.log('user', user)
+
+    // if (user) {
+    //     redirect('/')
+    // }
     return <>{children}</>
 }
