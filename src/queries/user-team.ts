@@ -111,7 +111,11 @@ export const getBot = async ({
 }: {
     supabase: TypedSupabaseClient
 }) => {
-    const { data } = await supabase.from('bots').select('*').single()
+    const { data } = await supabase
+        .from('bots')
+        .select('*')
+        .eq('id', 'd35d2c28-1598-427e-9eb4-202be618394b')
+        .single()
     return data as BotInfo
 }
 
