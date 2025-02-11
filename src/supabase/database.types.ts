@@ -12,25 +12,37 @@ export type Database = {
       bots: {
         Row: {
           avatar_url: string | null
+          codename: string | null
           created_at: string
           display_name: string | null
+          email: string | null
           id: string
+          level: string | null
+          moto: string | null
           teamdescription: string | null
           teamname: string | null
         }
         Insert: {
           avatar_url?: string | null
+          codename?: string | null
           created_at?: string
           display_name?: string | null
+          email?: string | null
           id?: string
+          level?: string | null
+          moto?: string | null
           teamdescription?: string | null
           teamname?: string | null
         }
         Update: {
           avatar_url?: string | null
+          codename?: string | null
           created_at?: string
           display_name?: string | null
+          email?: string | null
           id?: string
+          level?: string | null
+          moto?: string | null
           teamdescription?: string | null
           teamname?: string | null
         }
@@ -38,16 +50,20 @@ export type Database = {
       }
       matches: {
         Row: {
+          batting_first: string | null
           batting_id: string | null
+          batting_second: string | null
           bot_id: string | null
           created_at: string | null
           current_ball: number | null
+          forfeit_id: string | null
           id: string
           innings: number | null
           is_completed: boolean | null
           is_innings_over: boolean | null
           is_timer: boolean
           isdraw: boolean | null
+          isforfeit: boolean | null
           isstarted: boolean | null
           max_overs: number
           max_wickets: number
@@ -63,16 +79,20 @@ export type Database = {
           winner: string | null
         }
         Insert: {
+          batting_first?: string | null
           batting_id?: string | null
+          batting_second?: string | null
           bot_id?: string | null
           created_at?: string | null
           current_ball?: number | null
+          forfeit_id?: string | null
           id?: string
           innings?: number | null
           is_completed?: boolean | null
           is_innings_over?: boolean | null
           is_timer?: boolean
           isdraw?: boolean | null
+          isforfeit?: boolean | null
           isstarted?: boolean | null
           max_overs: number
           max_wickets: number
@@ -88,16 +108,20 @@ export type Database = {
           winner?: string | null
         }
         Update: {
+          batting_first?: string | null
           batting_id?: string | null
+          batting_second?: string | null
           bot_id?: string | null
           created_at?: string | null
           current_ball?: number | null
+          forfeit_id?: string | null
           id?: string
           innings?: number | null
           is_completed?: boolean | null
           is_innings_over?: boolean | null
           is_timer?: boolean
           isdraw?: boolean | null
+          isforfeit?: boolean | null
           isstarted?: boolean | null
           max_overs?: number
           max_wickets?: number
@@ -417,6 +441,7 @@ export type Database = {
           created_at: string | null
           display_name: string | null
           email: string | null
+          fcmtoken: string | null
           id: string
           last_seen: string | null
           role: string | null
@@ -429,6 +454,7 @@ export type Database = {
           created_at?: string | null
           display_name?: string | null
           email?: string | null
+          fcmtoken?: string | null
           id?: string
           last_seen?: string | null
           role?: string | null
@@ -441,6 +467,7 @@ export type Database = {
           created_at?: string | null
           display_name?: string | null
           email?: string | null
+          fcmtoken?: string | null
           id?: string
           last_seen?: string | null
           role?: string | null
@@ -458,6 +485,15 @@ export type Database = {
       autogenerate_toss: {
         Args: {
           match_id: string
+        }
+        Returns: Json
+      }
+      botmatchinit: {
+        Args: {
+          user_id: string
+          bot_id: string
+          max_wickets: number
+          max_overs: number
         }
         Returns: Json
       }
@@ -495,6 +531,34 @@ export type Database = {
           matches_won: number
           matches_lost: number
           winning_percentage: number
+        }[]
+      }
+      get_match_details_by_matchid: {
+        Args: {
+          matchid: string
+        }
+        Returns: {
+          id: string
+          winner: string
+          result: string
+          result_by: string
+          type: string
+          bat_first: Json
+          bat_second: Json
+        }[]
+      }
+      get_user_matches: {
+        Args: {
+          userid: string
+        }
+        Returns: {
+          id: string
+          winner: string
+          result: string
+          result_by: string
+          type: string
+          battingfirst: Json
+          battingsecond: Json
         }[]
       }
       get_users_with_requests: {
@@ -625,6 +689,13 @@ export type Database = {
           p_wickets: number
         }
         Returns: undefined
+      }
+      updatetoss: {
+        Args: {
+          match_id: string
+          toss_selection: string
+        }
+        Returns: Json
       }
       upsertreqstatus: {
         Args: {

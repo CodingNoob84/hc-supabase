@@ -1,4 +1,5 @@
 'use client'
+import { getBotNumber } from '@/lib/genBotNumber'
 import {
     handleBotScore,
     handleBotScoreTypes,
@@ -45,6 +46,8 @@ export const RunSelectionBlock = ({ matchId }: RunSelectionTypes) => {
     })
     const matchData = queryClient.getQueryData<MatchData>(['match', matchId])
 
+    const isBatting = matchData?.batting_id == matchData?.my_team.id
+
     const [loading, setLoading] = useState(false)
     const [userNumber, setUserNumber] = useState(5)
     const [botNumber, setBotNumber] = useState(5)
@@ -84,7 +87,7 @@ export const RunSelectionBlock = ({ matchId }: RunSelectionTypes) => {
         console.log('matchdata', matchData)
         console.log('my_number', numb)
         if (matchData?.type == 'bot') {
-            const botnumb = generateRandomBotNumber()
+            const botnumb = getBotNumber(matchData.opp_team.id, numb, isBatting)
             console.log('botnumber-mynumber', botnumb, numb)
             if (user?.id) {
                 handleScoreMutation.mutate({

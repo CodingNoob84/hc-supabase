@@ -324,16 +324,29 @@ export const PlayingBtn = () => {
     )
 }
 
-export const ContinuePlayingBtn = ({ matchId }: { matchId: string }) => {
+export const ContinuePlayingBtn = ({
+    userId,
+    matchId,
+    handleForfeit,
+}: {
+    userId: string
+    matchId: string
+    handleForfeit: (userId: string) => void
+}) => {
     return (
-        <Button
-            variant="default"
-            className="w-full max-w-md mx-auto py-2 cursor-not-allowed"
-            asChild
-        >
-            <Link href={`/dashboard/usersgame/${matchId}`}>
-                Continue to Play
-            </Link>
-        </Button>
+        <div className="w-full flex justify-between gap-4">
+            <Button
+                variant="default"
+                className="w-full cursor-not-allowed"
+                asChild
+            >
+                <Link href={`/dashboard/usersgame/${matchId}`}>
+                    Continue to Play
+                </Link>
+            </Button>
+            <Button className="w-full" onClick={() => handleForfeit(userId)}>
+                Forfeit
+            </Button>
+        </div>
     )
 }

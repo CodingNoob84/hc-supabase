@@ -99,7 +99,7 @@ export function TeamOwnersCardExample() {
         runs: 12,
         wickets: 3,
         overs: (24 / 6).toFixed(1),
-        avatarUrl: '/placeholder.svg?height=64&width=64',
+        avatarUrl: '',
     }
 
     const owner2 = {
@@ -108,7 +108,7 @@ export function TeamOwnersCardExample() {
         runs: 18,
         wickets: 2,
         overs: (28 / 6).toFixed(1),
-        avatarUrl: '/placeholder.svg?height=64&width=64',
+        avatarUrl: '',
     }
 
     return <TeamOwnersCard owner1={owner1} owner2={owner2} />

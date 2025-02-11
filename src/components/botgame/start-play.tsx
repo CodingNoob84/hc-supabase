@@ -1,7 +1,6 @@
 'use client'
 
-import { Timer, Trophy, Users } from 'lucide-react'
-import { useState } from 'react'
+import { Timer, Users } from 'lucide-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -40,8 +39,8 @@ export const StartPlay = () => {
             router.push(`/dashboard/botgame/${result.match_id}`)
         },
     })
-
-    const [matchType, setMatchType] = useState('one')
+    const matchType = 'one'
+    //const [matchType, setMatchType] = useState('one')
     // const [timerEnabled, setTimerEnabled] = useState(false)
 
     const handleInitPlay = () => {
@@ -113,13 +112,13 @@ export const StartPlay = () => {
                     <h3 className="text-2xl font-bold">{bot?.display_name}</h3>
                     <div className="flex items-center text-muted-foreground">
                         <Users className="mr-1 h-4 w-4" />
-                        <span>{bot?.teamname}</span>
+                        <span>{bot?.email}</span>
                     </div>
                 </div>
             </CardHeader>
             <CardContent className="flex flex-col space-y-6">
                 <div>{`"${bot?.teamdescription}"`}</div>
-                <div className="space-y-3 py-2">
+                {/* <div className="space-y-3 py-2">
                     <div className="grid grid-cols-2 gap-4">
                         <Button
                             variant={
@@ -140,7 +139,7 @@ export const StartPlay = () => {
                             Five Over
                         </Button>
                     </div>
-                </div>
+                </div> */}
                 {/* <div className="space-y-3">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">

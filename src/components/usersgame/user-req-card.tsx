@@ -63,13 +63,17 @@ export const UserReqCard = ({
         mutation.mutate({ friendid: id, reqstatus: 'accepted', gamemode: '' })
     }
 
+    const forfeitMatch = async (id: string) => {
+        mutation.mutate({ friendid: id, reqstatus: 'forfeit', gamemode: '' })
+    }
+
     return (
         <Card className="overflow-hidden">
             <CardContent className="p-0">
                 <div className="flex items-center p-4">
                     <Avatar className="h-12 w-12">
                         <AvatarImage
-                            src={user.avatar_url || '/placeholder.svg'}
+                            src={user.avatar_url || ''}
                             alt={user.display_name || 'Anonymous'}
                         />
                         <AvatarFallback>
@@ -136,7 +140,11 @@ export const UserReqCard = ({
                     )}
                     {/* {user.req_status === 'play' && <PlayingBtn />} */}
                     {user.req_status === 'play' && user.matchid && (
-                        <ContinuePlayingBtn matchId={user.matchid} />
+                        <ContinuePlayingBtn
+                            userId={user.user_id}
+                            matchId={user.matchid}
+                            handleForfeit={forfeitMatch}
+                        />
                     )}
                 </div>
             </CardContent>

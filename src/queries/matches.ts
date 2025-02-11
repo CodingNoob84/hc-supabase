@@ -3,8 +3,8 @@ import { TypedSupabaseClient } from '@/supabase/types'
 export interface matchInitTypes {
     my_id: string
     opp_id: string
-    max_overs: number | undefined
-    max_wickets: number | undefined
+    max_overs: number
+    max_wickets: number
     is_timer: boolean | undefined
     type: string
 }
@@ -26,6 +26,19 @@ export const matchInit = async (
         max_wickets: data.max_wickets,
         is_timer: data.is_timer,
         type: data.type,
+    })
+    return result.data as unknown as matchInitReturnType
+}
+
+export const initBotMatch = async (
+    data: matchInitTypes,
+    supabase: TypedSupabaseClient
+) => {
+    const result = await supabase.rpc('botmatchinit', {
+        user_id: data.my_id,
+        bot_id: data.opp_id,
+        max_overs: data.max_overs,
+        max_wickets: data.max_wickets,
     })
     return result.data as unknown as matchInitReturnType
 }

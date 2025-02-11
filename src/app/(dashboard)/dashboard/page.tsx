@@ -1,5 +1,6 @@
 'use client'
 import AnnouncementCard from '@/components/common/announcements'
+import Notifications from '@/components/common/notifications'
 import { AdminBtns } from '@/components/dashboard/admin-btns'
 import { UserStatsCard } from '@/components/dashboard/user-stats-card'
 import { Button } from '@/components/ui/button'
@@ -9,6 +10,7 @@ import Link from 'next/link'
 export default function Dashboard() {
     return (
         <div className="container flex flex-col gap-4 mx-auto px-4 py-8">
+            <Notifications />
             <AnnouncementCard />
             <UserStatsCard />
             <Button className="w-full max-w-md mx-auto" asChild>

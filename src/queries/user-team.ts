@@ -104,6 +104,19 @@ export interface BotInfo {
     avatar_url: string
     teamname: string
     teamdescription: string
+    email: string
+    moto: string
+    level: string
+    codename: string
+}
+
+export const getAllBots = async ({
+    supabase,
+}: {
+    supabase: TypedSupabaseClient
+}) => {
+    const { data } = await supabase.from('bots').select('*')
+    return data as BotInfo[]
 }
 
 export const getBot = async ({
@@ -114,7 +127,7 @@ export const getBot = async ({
     const { data } = await supabase
         .from('bots')
         .select('*')
-        .eq('id', 'd35d2c28-1598-427e-9eb4-202be618394b')
+        .eq('id', '499f299f-6a99-4055-af41-a2ca83f5f3a4')
         .single()
     return data as BotInfo
 }

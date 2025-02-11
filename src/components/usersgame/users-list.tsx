@@ -7,6 +7,7 @@ import {
 } from '@/queries/user-team'
 import { getSupabaseBrowserClient } from '@/supabase/client'
 
+import { sendRequest } from '@/lib/useFcmToken'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { UserReqCard } from './user-req-card'
@@ -27,9 +28,11 @@ export interface UserRequestTable {
 
 export default function FriendsList({
     myId,
+    myName,
     initialUsers,
 }: {
     myId: string
+    myName: string
     initialUsers: FriendWithCountdown[]
 }) {
     const [friends, setFriends] = useState(initialUsers)
@@ -67,6 +70,11 @@ export default function FriendsList({
     const handleInsertEvent = (newRecord: UserRequestTable) => {
         if (!newRecord) return
 
+        if (newRecord.status_req == 'received') {
+            console.log('---->', newRecord.receiverid)
+            sendRequest(newRecord.receiverid, myName)
+        }
+
         let reqStatus: RequsetStatusType
 
         if (newRecord.status_req === 'requested') {
@@ -96,6 +104,14 @@ export default function FriendsList({
         if (!updatedRecord || !updatedRecord.id) {
             console.warn('Invalid updated record:', updatedRecord)
             return
+        }
+        console.log('---->', updatedRecord.status_req)
+        if (
+            updatedRecord.status_req == 'requested' &&
+            updatedRecord.senderid === myId
+        ) {
+            console.log('---->', updatedRecord.receiverid)
+            sendRequest(updatedRecord.receiverid, myName)
         }
 
         // Check if navigation is required

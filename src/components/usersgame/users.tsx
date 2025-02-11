@@ -46,5 +46,13 @@ export const Users = () => {
 
     console.log(users)
 
-    return users && <FriendsList myId={userId as string} initialUsers={users} />
+    return (
+        users && (
+            <FriendsList
+                myId={userId as string}
+                myName={user?.display_name as string}
+                initialUsers={users}
+            />
+        )
+    )
 }

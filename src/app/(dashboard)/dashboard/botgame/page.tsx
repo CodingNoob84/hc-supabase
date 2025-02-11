@@ -1,4 +1,4 @@
-import { StartPlay } from '@/components/botgame/start-play'
+import { BotList } from '@/components/botgame/bot-list'
 import { Button } from '@/components/ui/button'
 import { botQuery } from '@/queries/queries'
 import { getSupabaseServer } from '@/supabase/server'
@@ -20,7 +20,8 @@ export default async function BotGamePage() {
                     <Link href="/dashboard">Back</Link>
                 </Button>
             </div>
-            <StartPlay />
+            <BotList />
+            {/* <StartPlay /> */}
         </div>
     )
 }

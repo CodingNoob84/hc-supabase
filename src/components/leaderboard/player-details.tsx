@@ -1,4 +1,5 @@
 import { X } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 type Player = {
     id: number
@@ -35,11 +36,16 @@ export function PlayerDetails({ player, onClose }: PlayerDetailsProps) {
                     </button>
                 </div>
                 <div className="flex items-center mb-6">
-                    <img
-                        src={`/placeholder.svg?height=64&width=64&text=${player.name[0]}&bg=${player.avatar}`}
-                        alt={`${player.name}'s avatar`}
-                        className="w-16 h-16 rounded-full mr-4"
-                    />
+                    <Avatar className="h-16 w-16">
+                        <AvatarImage
+                            src={player.avatar || ''}
+                            alt={player.name || 'Anonymous'}
+                        />
+                        <AvatarFallback>
+                            {player.name?.charAt(0) || 'A'}
+                        </AvatarFallback>
+                    </Avatar>
+
                     <div>
                         <div className="text-green-600">
                             {player.winPercentage}% win rate
