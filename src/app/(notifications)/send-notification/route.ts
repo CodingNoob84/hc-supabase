@@ -2,7 +2,12 @@ import admin from 'firebase-admin'
 import { Message } from 'firebase-admin/messaging'
 import { NextRequest, NextResponse } from 'next/server'
 
-import serviceAccount from '../../../config/service_key.json'
+if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+    throw new Error('Missing FIREBASE_SERVICE_ACCOUNT in environment variables')
+}
+
+// Parse the JSON environment variable
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT!)
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
